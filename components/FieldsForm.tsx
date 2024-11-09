@@ -84,7 +84,12 @@ export const FieldsForm = () => {
         )}
       />
 
-      <Button type="submit" className="mt-2 self-end" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="mt-2 self-end"
+        disabled={isSubmitting}
+        gradientDuoTone="purpleToPink"
+      >
         Отправить
       </Button>
     </form>
