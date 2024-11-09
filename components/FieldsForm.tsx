@@ -10,12 +10,12 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 
 type FieldsFormData = {
-  title: string;
+  subject: string;
   text: string;
 };
 
 const schema = yup.object().shape({
-  title: yup.string().nullable().required("Обязательное поле"),
+  subject: yup.string().nullable().required("Обязательное поле"),
   text: yup.string().nullable().required("Обязательное поле"),
 });
 
@@ -29,19 +29,17 @@ export const FieldsForm = () => {
     resolver: yupResolver(schema),
     defaultValues: {
       text: "",
-      title: "",
+      subject: "",
     },
   });
 
   const submitHandler: SubmitHandler<FieldsFormData> = useCallback(
     async (formData) => {
       try {
-        await processMessage(formData.title, formData.text);
+        await processMessage(formData.subject, formData.text);
         reset();
       } catch {
-        toast("Неизвестная ошибка", {
-          type: "error",
-        });
+        toast("Неизвестная ошибка", { type: "error" });
       }
     },
     [reset],
@@ -58,12 +56,12 @@ export const FieldsForm = () => {
       </div>
       <Controller
         control={control}
-        name="title"
+        name="subject"
         render={({ field }) => (
           <TextInput
             {...field}
-            color={errors.title?.message && "failure"}
-            helperText={errors.title?.message}
+            color={errors.subject?.message && "failure"}
+            helperText={errors.subject?.message}
             disabled={isSubmitting}
           />
         )}
@@ -79,8 +77,8 @@ export const FieldsForm = () => {
           <Textarea
             {...field}
             rows={10}
-            color={errors.title?.message && "failure"}
-            helperText={errors.title?.message}
+            color={errors.text?.message && "failure"}
+            helperText={errors.text?.message}
             disabled={isSubmitting}
           />
         )}
