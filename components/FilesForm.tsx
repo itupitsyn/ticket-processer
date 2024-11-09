@@ -3,7 +3,7 @@
 import { processBinaryMessages } from "@/utils/apiMethods";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, FileInput } from "flowbite-react";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -18,6 +18,7 @@ const schema = yup.object().shape({
 });
 
 export const FilesForm: FC = () => {
+  const [fileKey, setFileKey] = useState(Math.random());
   const {
     control,
     handleSubmit,
@@ -31,6 +32,7 @@ export const FilesForm: FC = () => {
     async (formData) => {
       try {
         await processBinaryMessages(formData.files);
+        setFileKey(Math.random());
         reset();
       } catch {
         toast("Неизвестная ошибка", { type: "error" });
@@ -40,38 +42,31 @@ export const FilesForm: FC = () => {
   );
 
   return (
-    <form
-      noValidate
-      onSubmit={handleSubmit(submitHandler)}
-      className="flex flex-col"
-    >
+    <form noValidate onSubmit={handleSubmit(submitHandler)} className="flex flex-col">
       <Controller
         control={control}
         name="files"
         render={({ field }) => (
           <FileInput
+            key={fileKey}
             multiple
             onChange={(e) => {
               if (!e.target.files) return;
               const arrayOfFiles: File[] = [];
               for (let i = 0; i < e.target.files.length; i += 1) {
-                arrayOfFiles.push(e.target.files[0]);
+                arrayOfFiles.push(e.target.files[i]);
               }
               field.onChange(arrayOfFiles);
             }}
             onBlur={field.onBlur}
             color={errors.files?.message && "failure"}
-            helperText={errors.files?.message}
+            helperText={errors.files?.message || "Файлы *.eml или *.csv"}
             disabled={isSubmitting}
+            accept=".eml,.csv"
           />
         )}
       />
-      <Button
-        type="submit"
-        className="mt-2 self-end"
-        disabled={isSubmitting}
-        gradientDuoTone="purpleToPink"
-      >
+      <Button type="submit" className="mt-2 self-end" disabled={isSubmitting} gradientDuoTone="purpleToPink">
         Отправить
       </Button>
     </form>

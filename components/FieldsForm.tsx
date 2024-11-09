@@ -46,11 +46,7 @@ export const FieldsForm = () => {
   );
 
   return (
-    <form
-      noValidate
-      onSubmit={handleSubmit(submitHandler)}
-      className="flex flex-col"
-    >
+    <form noValidate onSubmit={handleSubmit(submitHandler)} className="flex flex-col">
       <div className="mb-2">
         <Label>Заголовок письма</Label>
       </div>
@@ -84,12 +80,7 @@ export const FieldsForm = () => {
         )}
       />
 
-      <Button
-        type="submit"
-        className="mt-2 self-end"
-        disabled={isSubmitting}
-        gradientDuoTone="purpleToPink"
-      >
+      <Button type="submit" className="mt-2 self-end" disabled={isSubmitting} gradientDuoTone="purpleToPink">
         Отправить
       </Button>
     </form>

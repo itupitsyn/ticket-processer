@@ -7,7 +7,9 @@ export const processMessage = async (title: string, text: string) => {
 
 export const processBinaryMessages = async (files: File[]) => {
   const data = new FormData();
-  files.forEach((file) => data.append("file", file));
+  files.forEach((file, idx) => {
+    data.append(`file[${idx}]`, file);
+  });
   const response = await axios.post("/api/binaryMessages", data);
   return response.data;
 };

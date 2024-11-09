@@ -14,6 +14,7 @@
     "@hookform/resolvers": "^3.9.1",
     "axios": "^1.7.7",
     "classnames": "^2.5.1",
+    "csv-string": "^4.1.1",
     "flowbite-react": "^0.10.2",
     "mailparser": "^3.7.1",
     "next": "^14.2.17",
