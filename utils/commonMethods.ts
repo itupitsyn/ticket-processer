@@ -1,5 +1,4 @@
-export const downloadTextFile = (fileContent: string) => {
-  const fileName = "parsed-data.csv";
+export const downloadTextFile = (fileName: string, fileContent: string) => {
   var element = document.createElement("a");
   element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(fileContent));
   element.setAttribute("download", fileName);

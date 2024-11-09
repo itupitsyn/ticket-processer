@@ -7,7 +7,7 @@ export default function Home() {
       <Navbar fluid rounded>
         <NavbarBrand>
           <span className="self-center whitespace-nowrap text-xl font-semibold">
-            Какой-то заголовок
+            Ассистент специалиста линии поддержки
           </span>
         </NavbarBrand>
         <DarkThemeToggle />

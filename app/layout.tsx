@@ -9,8 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Какое-то приложение",
-  description: "Don't be so shy",
+  title: "Ассистент",
+  description: "Ассистент специалиста первой линии поддержки",
 };
 
 export default function RootLayout({
@@ -23,12 +23,7 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body
-        className={classNames(
-          inter.className,
-          "dark:bg-gray-800 dark:text-white",
-        )}
-      >
+      <body className={classNames(inter.className, "dark:bg-gray-800 dark:text-white")}>
         {children}
         <ToastContainer position="top-center" />
       </body>
