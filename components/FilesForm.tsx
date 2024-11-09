@@ -1,5 +1,6 @@
 "use client";
 
+import { FullMsg } from "@/types";
 import { processBinaryMessages } from "@/utils/apiMethods";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, FileInput } from "flowbite-react";
@@ -17,7 +18,11 @@ const schema = yup.object().shape({
   files: yup.array().nullable().required("Обязательное поле"),
 });
 
-export const FilesForm: FC = () => {
+interface FilesFormProps {
+  onAfterSubmit: (data: FullMsg[]) => void;
+}
+
+export const FilesForm: FC<FilesFormProps> = ({ onAfterSubmit }) => {
   const [fileKey, setFileKey] = useState(Math.random());
   const {
     control,
@@ -31,14 +36,15 @@ export const FilesForm: FC = () => {
   const submitHandler: SubmitHandler<FilesFormType> = useCallback(
     async (formData) => {
       try {
-        await processBinaryMessages(formData.files);
+        const data = await processBinaryMessages(formData.files);
+        onAfterSubmit(data);
         setFileKey(Math.random());
         reset();
       } catch {
         toast("Неизвестная ошибка", { type: "error" });
       }
     },
-    [reset],
+    [onAfterSubmit, reset],
   );
 
   return (
@@ -66,7 +72,13 @@ export const FilesForm: FC = () => {
           />
         )}
       />
-      <Button type="submit" className="mt-2 self-end" disabled={isSubmitting} gradientDuoTone="purpleToPink">
+      <Button
+        type="submit"
+        className="mt-2 self-end"
+        disabled={isSubmitting}
+        gradientDuoTone="purpleToPink"
+        isProcessing={isSubmitting}
+      >
         Отправить
       </Button>
     </form>

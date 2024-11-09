@@ -1,9 +1,10 @@
 "use client";
 
+import { FullMsg } from "@/types";
 import { processMessage } from "@/utils/apiMethods";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Label, Textarea, TextInput } from "flowbite-react";
-import { useCallback } from "react";
+import { FC, useCallback } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -19,7 +20,11 @@ const schema = yup.object().shape({
   text: yup.string().nullable().required("Обязательное поле"),
 });
 
-export const FieldsForm = () => {
+interface FieldsFormProps {
+  onAfterSubmit: (data: FullMsg) => void;
+}
+
+export const FieldsForm: FC<FieldsFormProps> = ({ onAfterSubmit }) => {
   const {
     control,
     handleSubmit,
@@ -36,13 +41,14 @@ export const FieldsForm = () => {
   const submitHandler: SubmitHandler<FieldsFormData> = useCallback(
     async (formData) => {
       try {
-        await processMessage(formData.subject, formData.text);
+        const data = await processMessage(formData.subject, formData.text);
+        onAfterSubmit(data);
         reset();
       } catch {
         toast("Неизвестная ошибка", { type: "error" });
       }
     },
-    [reset],
+    [onAfterSubmit, reset],
   );
 
   return (
@@ -80,7 +86,13 @@ export const FieldsForm = () => {
         )}
       />
 
-      <Button type="submit" className="mt-2 self-end" disabled={isSubmitting} gradientDuoTone="purpleToPink">
+      <Button
+        type="submit"
+        className="mt-2 self-end"
+        disabled={isSubmitting}
+        isProcessing={isSubmitting}
+        gradientDuoTone="purpleToPink"
+      >
         Отправить
       </Button>
     </form>

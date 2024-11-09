@@ -1,3 +1,5 @@
+import { FullMsg, Msg } from "@/types";
+import { askQWEN } from "@/utils/apiMethods";
 import * as CSV from "csv-string";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +10,7 @@ export const POST = async (request: NextRequest) => {
 
   if (!collection.length) return new NextResponse("", { status: 418 });
 
-  const result: { subject: string; text: string }[] = [];
+  const msgs: Msg[] = [];
   const simpleParser = require("mailparser").simpleParser;
   const prms: Promise<ReturnType<typeof simpleParser>>[] = [];
 
@@ -21,7 +23,7 @@ export const POST = async (request: NextRequest) => {
 
     if (parsed.subject || parsed.text) return parsed;
 
-    const parsedFiles: typeof result = [];
+    const parsedFiles: Msg[] = [];
     const data = CSV.parse(text);
     for (let i = 1; i < data.length; i += 1) {
       if (data[i].length > 3) {
@@ -38,9 +40,16 @@ export const POST = async (request: NextRequest) => {
   const parsed = await Promise.all(prms);
   parsed.forEach((item) => {
     Array.isArray(item)
-      ? item.forEach((curr) => result.push(curr))
-      : result.push({ subject: item.subject, text: item.text });
+      ? item.forEach((curr) => msgs.push(curr))
+      : msgs.push({ subject: item.subject, text: item.text });
   });
+
+  const extraData = await Promise.all(msgs.map(askQWEN));
+  const result: FullMsg[] = [];
+  for (let i = 0; i < msgs.length; i += 1) {
+    const fields: Omit<FullMsg, "subject" | "text"> = await JSON.parse(extraData[i].message.content);
+    result.push({ ...msgs[i], ...fields });
+  }
 
   return new NextResponse(JSON.stringify(result));
 };
