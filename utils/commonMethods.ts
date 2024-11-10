@@ -123,7 +123,8 @@ export const getFullMsg = async (msg: Msg): Promise<FullMsg> => {
       // }
 
       return { ...msg, device: pDevice, problem: pProblem, sn: pSn };
-    } catch {
+    } catch (e) {
+      console.error(e);
       continue;
     }
   }
