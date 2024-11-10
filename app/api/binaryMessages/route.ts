@@ -27,7 +27,7 @@ export const POST = async (request: NextRequest) => {
     const parsedFiles: Msg[] = [];
     const data = CSV.parse(text);
     for (let i = 1; i < data.length; i += 1) {
-      if (data[i].length > 3) {
+      if (data[i].length >= 3) {
         parsedFiles.push({ subject: data[i][1], text: data[i][2] });
       }
     }
