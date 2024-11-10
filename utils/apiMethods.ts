@@ -1,4 +1,3 @@
-import { SYSTEM_PROMPT } from "@/constants";
 import { FullMsg, Msg, QWENResponse } from "@/types";
 import axios from "axios";
 
@@ -18,12 +17,12 @@ export const processBinaryMessages = async (files: File[]) => {
   return response.data;
 };
 
-export const askQWEN = async (message: Msg) => {
+export const askQWEN = async (message: string, prompt: string) => {
   const response = await axios.post<QWENResponse>(`${process.env.OOLAMA_URL}/api/chat`, {
     model: "qwen2.5:7b",
     messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: `${message.subject}. ${message.text}` },
+      { role: "system", content: prompt },
+      { role: "user", content: message },
     ],
     stream: false,
   });

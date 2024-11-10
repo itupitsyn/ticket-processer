@@ -52,7 +52,6 @@ export const HelpPage: FC = () => {
     );
     setOpen(false);
     setAdditionalOpen(false);
-    setSelectedItems({});
   }, []);
 
   useEffect(() => {
@@ -72,7 +71,6 @@ export const HelpPage: FC = () => {
   }, [parsed]);
 
   useEffect(() => {
-    setSelectedItems({});
     if (!filters.device && !filters.problem && !filters.sn) {
       setFiltered(parsed);
       return;
@@ -107,6 +105,13 @@ export const HelpPage: FC = () => {
 
     cRef.current.indeterminate = checkAllState == undefined;
   }, [checkAllState]);
+
+  useEffect(() => {
+    const newVal: typeof selectedItems = {};
+    filtered.forEach((item) => (newVal[item.id] = item));
+    setSelectedItems(newVal);
+  }, [filtered]);
+
   return (
     <>
       <div className="mt-10 flex items-center justify-between">

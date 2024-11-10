@@ -1,5 +1,5 @@
-import { FullMsg, Msg } from "@/types";
-import { askQWEN } from "@/utils/apiMethods";
+import { Msg } from "@/types";
+import { getFullMsg } from "@/utils/commonMethods";
 import * as CSV from "csv-string";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -19,9 +19,10 @@ export const POST = async (request: NextRequest) => {
     const utf8Decoder = new TextDecoder("UTF-8");
     const text = utf8Decoder.decode(dataBuffer);
 
-    const parsed = await simpleParser(text);
-
-    if (parsed.subject || parsed.text) return parsed;
+    if (file.name.toLocaleLowerCase().endsWith(".eml")) {
+      const parsed = await simpleParser(text);
+      return parsed;
+    }
 
     const parsedFiles: Msg[] = [];
     const data = CSV.parse(text);
@@ -44,12 +45,7 @@ export const POST = async (request: NextRequest) => {
       : msgs.push({ subject: item.subject, text: item.text });
   });
 
-  const extraData = await Promise.all(msgs.map(askQWEN));
-  const result: FullMsg[] = [];
-  for (let i = 0; i < msgs.length; i += 1) {
-    const fields: Omit<FullMsg, "subject" | "text"> = await JSON.parse(extraData[i].message.content);
-    result.push({ ...msgs[i], ...fields });
-  }
+  const result = await Promise.all(msgs.map(getFullMsg));
 
   return new NextResponse(JSON.stringify(result));
 };
