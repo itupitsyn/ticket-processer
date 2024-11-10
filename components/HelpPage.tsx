@@ -126,61 +126,63 @@ export const HelpPage: FC = () => {
       </div>
 
       {parsed.length > 0 && (
-        <Table className="mt-6">
-          <Table.Head>
-            <Table.HeadCell>
-              <Checkbox
-                ref={cRef}
-                checked={checkAllState || false}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    const newVal: typeof selectedItems = {};
-                    filtered.forEach((item) => (newVal[item.id] = item));
-                    setSelectedItems(newVal);
-                  } else {
-                    setSelectedItems({});
-                  }
-                }}
-              />
-            </Table.HeadCell>
-            <Table.HeadCell>Тема</Table.HeadCell>
-            <Table.HeadCell>Обращение</Table.HeadCell>
-            <Table.HeadCell>Тип оборудования</Table.HeadCell>
-            <Table.HeadCell>Точка отказа</Table.HeadCell>
-            <Table.HeadCell>Серийный номер</Table.HeadCell>
-          </Table.Head>
-          <Table.Body>
-            {filtered.map((item) => (
-              <Table.Row key={item.id}>
-                <Table.Cell>
-                  <Checkbox
-                    checked={!!selectedItems[item.id]}
-                    onChange={() => {
-                      setSelectedItems((prev) => {
-                        const newVal = { ...prev };
-                        if (!selectedItems[item.id]) newVal[item.id] = item;
-                        else delete newVal[item.id];
+        <div className="overflow-auto">
+          <Table className="mt-6">
+            <Table.Head>
+              <Table.HeadCell>
+                <Checkbox
+                  ref={cRef}
+                  checked={checkAllState || false}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      const newVal: typeof selectedItems = {};
+                      filtered.forEach((item) => (newVal[item.id] = item));
+                      setSelectedItems(newVal);
+                    } else {
+                      setSelectedItems({});
+                    }
+                  }}
+                />
+              </Table.HeadCell>
+              <Table.HeadCell>Тема</Table.HeadCell>
+              <Table.HeadCell>Обращение</Table.HeadCell>
+              <Table.HeadCell>Тип оборудования</Table.HeadCell>
+              <Table.HeadCell>Точка отказа</Table.HeadCell>
+              <Table.HeadCell>Серийный номер</Table.HeadCell>
+            </Table.Head>
+            <Table.Body>
+              {filtered.map((item) => (
+                <Table.Row key={item.id}>
+                  <Table.Cell>
+                    <Checkbox
+                      checked={!!selectedItems[item.id]}
+                      onChange={() => {
+                        setSelectedItems((prev) => {
+                          const newVal = { ...prev };
+                          if (!selectedItems[item.id]) newVal[item.id] = item;
+                          else delete newVal[item.id];
 
-                        return newVal;
-                      });
-                    }}
-                  />
-                </Table.Cell>
-                <Table.Cell>{item.subject}</Table.Cell>
-                <Table.Cell>{item.text}</Table.Cell>
-                <Table.Cell className={classNames(item.device === SPECIFY_KEY_WORD && "text-red-500")}>
-                  {item.device}
-                </Table.Cell>
-                <Table.Cell className={classNames(item.problem === SPECIFY_KEY_WORD && "text-red-500")}>
-                  {item.problem}
-                </Table.Cell>
-                <Table.Cell className={classNames(item.sn === SPECIFY_KEY_WORD && "text-red-500")}>
-                  {item.sn}
-                </Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        </Table>
+                          return newVal;
+                        });
+                      }}
+                    />
+                  </Table.Cell>
+                  <Table.Cell>{item.subject}</Table.Cell>
+                  <Table.Cell>{item.text}</Table.Cell>
+                  <Table.Cell className={classNames(item.device === SPECIFY_KEY_WORD && "text-red-500")}>
+                    {item.device}
+                  </Table.Cell>
+                  <Table.Cell className={classNames(item.problem === SPECIFY_KEY_WORD && "text-red-500")}>
+                    {item.problem}
+                  </Table.Cell>
+                  <Table.Cell className={classNames(item.sn === SPECIFY_KEY_WORD && "text-red-500")}>
+                    {item.sn}
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+        </div>
       )}
 
       <Drawer open={open} onClose={() => setOpen(false)} className="md:min-w-[450px]">
