@@ -1,4 +1,4 @@
-import { Msg } from "@/types";
+import { FullMsg, Msg } from "@/types";
 import { getFullMsg } from "@/utils/commonMethods";
 import * as CSV from "csv-string";
 import { NextRequest, NextResponse } from "next/server";
@@ -45,7 +45,19 @@ export const POST = async (request: NextRequest) => {
       : msgs.push({ subject: item.subject, text: item.text });
   });
 
-  const result = await Promise.all(msgs.map(getFullMsg));
+  const result: FullMsg[] = [];
+  let promises: Promise<FullMsg>[] = [];
+
+  for (let i = 0; i < msgs.length; i += 1) {
+    if (promises.length && !(promises.length % 20)) {
+      (await Promise.all(promises)).forEach((item) => result.push(item));
+      promises = [];
+    }
+    promises.push(getFullMsg(msgs[i]));
+  }
+  if (promises.length) {
+    (await Promise.all(promises)).forEach((item) => result.push(item));
+  }
 
   return new NextResponse(JSON.stringify(result));
 };
