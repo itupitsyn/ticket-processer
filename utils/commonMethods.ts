@@ -104,23 +104,23 @@ export const getFullMsg = async (msg: Msg): Promise<FullMsg> => {
       let pProblem = fields["problem"];
       let pSn = fields["sn"];
 
-      if (pDevice == undefined || pProblem == undefined || pSn == undefined) throw new Error();
+      // if (pDevice == undefined || pProblem == undefined || pSn == undefined) throw new Error();
 
-      // console.log({ pProblem, ok: allowedProblems.includes(pProblem.toLocaleLowerCase()) });
-      if (!allowedProblems.includes(pProblem.toLocaleLowerCase())) {
-        pProblem = getProblem(pProblem);
-      }
+      // // console.log({ pProblem, ok: allowedProblems.includes(pProblem.toLocaleLowerCase()) });
+      // if (!allowedProblems.includes(pProblem.toLocaleLowerCase())) {
+      //   pProblem = getProblem(pProblem);
+      // }
 
-      // console.log({ pDevice, ok: allowedDevs.includes(pDevice.toLocaleLowerCase()) });
-      if (!allowedDevs.includes(pDevice.toLocaleLowerCase())) {
-        pDevice = getDevice(pDevice, pProblem);
-      }
+      // // console.log({ pDevice, ok: allowedDevs.includes(pDevice.toLocaleLowerCase()) });
+      // if (!allowedDevs.includes(pDevice.toLocaleLowerCase())) {
+      //   pDevice = getDevice(pDevice, pProblem);
+      // }
 
-      if (pSn.match(snRtoCheck) == null) {
-        const fake = text.match(snR);
-        if (!fake) pSn = "";
-        else pSn = fake[0];
-      }
+      // if (pSn.match(snRtoCheck) == null) {
+      //   const fake = text.match(snR);
+      //   if (!fake) pSn = "";
+      //   else pSn = fake[0];
+      // }
 
       return { ...msg, device: pDevice, problem: pProblem, sn: pSn };
     } catch {
@@ -128,7 +128,9 @@ export const getFullMsg = async (msg: Msg): Promise<FullMsg> => {
     }
   }
 
-  const pProblem = getProblem(text);
+  return { ...msg, device: "", problem: "", sn: "" };
 
-  return { ...msg, device: getDevice(text, pProblem), problem: pProblem, sn: text.match(snR)?.[0] || "" };
+  // const pProblem = getProblem(text);
+
+  // return { ...msg, device: getDevice(text, pProblem), problem: pProblem, sn: text.match(snR)?.[0] || "" };
 };
