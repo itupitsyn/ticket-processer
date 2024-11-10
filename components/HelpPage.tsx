@@ -250,9 +250,15 @@ export const HelpPage: FC = () => {
             className="mt-4"
             onClick={() => {
               const data = convertArrayToCSV(
-                Object.values(selectedItems).map((item) => {
-                  const { id, ...obj } = item;
-                  return obj;
+                Object.values(selectedItems).map((item, idx) => {
+                  return {
+                    index: idx,
+                    Тема: item.subject,
+                    Обращение: item.text,
+                    "Тип оборудования": item.device,
+                    "Точка отказа": item.problem,
+                    "Серийный номер": item.sn,
+                  };
                 }),
               );
               downloadTextFile("parsed-data.csv", data);
