@@ -92,7 +92,10 @@ const getDevice = (device: string, problem: string) => {
 };
 
 export const getFullMsg = async (msg: Msg): Promise<FullMsg> => {
-  const text = `${msg.subject}. ${msg.text}`.replace(/[^\w\s,.!\-а-яё]/gm, "").replace(/[\.]{2,}/gim, ".");
+  const text = `${msg.subject}. ${msg.text}`
+    .replace(/[^\w\s,.!\-а-яё]/gm, "")
+    .replace(/[\.]{2,}/gim, ".")
+    .slice(0, 2048);
   const snRtoCheck = new RegExp(/^[a-zA-Z][a-zA-Z0-9]{9,15}$/);
   const snR = new RegExp(/[a-zA-Z][a-zA-Z0-9]{9,15}/);
 

@@ -208,6 +208,7 @@ export const HelpPage: FC = () => {
         <Drawer.Items className="flex flex-col gap-4">
           <div>Фильтры</div>
           <Select
+            id="device"
             classNames={selectClassNames}
             placeholder="Тип оборудования"
             noOptionsMessage={() => "Нет данных"}
@@ -220,6 +221,7 @@ export const HelpPage: FC = () => {
             }
           />
           <Select
+            id="problem"
             classNames={selectClassNames}
             placeholder="Точка отказа"
             noOptionsMessage={() => "Нет данных"}
@@ -232,6 +234,7 @@ export const HelpPage: FC = () => {
             }
           />
           <Select
+            id="sn"
             classNames={selectClassNames}
             placeholder="Серийный номер"
             noOptionsMessage={() => "Нет данных"}
