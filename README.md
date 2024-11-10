@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Приложение для помощи сотруднику первой линии поддержки
 
-## Getting Started
+## Требования
 
-First, run the development server:
+Для работы приложения необходима NodeJS не ниже 18 версии и docker
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Установка и запуск
+
+Приложение работает в связке с Ollama.
+Для её установки и запуска в докере необходимо выполнить следующую инструкцию
+
+```
+docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Следующим шагом необходимо перейти в папку с исходным кодом приложения и установить зависимости, выполнив
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm i
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+После установки зависимостей необходимо в этой же папке создать файл .env со следующим содержимым
 
-## Learn More
+```
+OOLAMA_URL="http://localhost:11434"
+```
 
-To learn more about Next.js, take a look at the following resources:
+Теперь можно приступить к билду. Для этого применяется команда
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Для запуска необходимо выполнить
 
-## Deploy on Vercel
+```
+npm start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+В случае успешного старта приложение доступно по адресу http://localhost:3000
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Как пользоваться приложением
+
+Подразумевается, что приложение является промежуточным звеном между почтой, в которую падают заявки от клиентов, и таск трекером. Его задачей является автоматизированное заполнение необходимых полей в заявках таск трекера.
+
+На главной странице есть кнопка "Получить данные", нажатие по которой открывает боковую панель с возможными вариантами загрузки данных из почты
+
+![alt text](images/image.png)
+
+![alt text](images/image-1.png)
+
+Существует возможно загрузки данных вручную через поля, а так же из файлов csv и eml
+
+Для загрузки данных из файлов необходимо перейти на вкладку "Файлы" и кликнуть по полю "Выбрать файлы". Откроется окно выбора файлов. Можно выбирать сразу несколько файлов разных форматов.
+
+![alt text](images/image-2.png)
+
+После подтверждения выбора необходимо нажать кнопку "Отправить", чтобы получить заполненные нейросетью данные.
+
+![alt text](images/image-3.png)
+
+Начнётся обработка текстов писем
+
+![alt text](images/image-4.png)
+
+После окончания обработки на странице приложения появится таблица с полями. Если какое-то поле не удалось запомнить, то оно будет заполнено ключевым словом УТОЧНИТЬ.
+
+![alt text](images/image-5.png)
+
+Также справа появится кнопка "Обработка", нажатие на которую приведёт к открытие панели фильтров и выгрузки данных.
+
+![alt text](images/image-6.png)
+
+После фильтрации результирующую таблицу можно выгрузить в csv формате, либо в JSON для последующей загрузки в таск трекер. Приложение можно доработать, чтобы выгрузка осуществлялась напрямую в таск трекер.
+
+## API
+
+Для обработки текстов писем реализованы методы api, к которым можно обращаться напрямую, минуя веб приложение. Они доступны по адресам '/api/message' для обработки текста в формате JSON. В теле POST запроса ожидается объект вида
+```
+{
+  subject: string;
+  text: string;
+}
+```
+
+Для обработки файлов используется метод `/api/binaryMessages` ожидается массив объектов типа `File`.
+
+Результатом работы методов являются объекты вида
+```
+{
+  subject: string;
+  text: string;
+  problem: string;
+  device: string;
+  sn: string;
+}
+```
